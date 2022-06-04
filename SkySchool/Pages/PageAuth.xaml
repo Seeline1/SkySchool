@@ -1,0 +1,21 @@
+﻿<Page x:Class="SkySchool.Pages.PageAuth"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SkySchool.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="779" d:DesignWidth="1006"
+      Title="PageAuth">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="750" Width="1000">
+        <TextBlock FontSize="40" Text="Логин" Width="125" Height="60" Margin="210,312,665,378"></TextBlock>
+        <TextBlock FontSize="40" Text="Пароль" Width="155" Height="60" Margin="210,403,635,287"></TextBlock>
+        <TextBlock FontSize="50" Text="Авторизация" Width="310" Height="70" Margin="345,162,345,518"></TextBlock>
+        <TextBox x:Name="TxtLogin" Width="400" Height="40" Margin="390,322,210,388"></TextBox>
+        <TextBox x:Name="TxtParol" Width="400" Height="40" Margin="390,412,210,298"></TextBox>
+        <PasswordBox x:Name="PassBoxParol" Width="400" Height="40" Margin="390,412,210,298" PasswordChanged="PassBoxParol_PasswordChanged"></PasswordBox>
+        <Button x:Name="ButtonEntry" Content="Войти" Margin="385,502,385,188" Click="ButtonEntry_Click"></Button>
+        <Image Visibility="Hidden" Width="34" Height="34" x:Name="ImgShowHide" Stretch="Fill" Margin="800,417,166,299" ToolTip="Показать пароль"
+             MouseLeave="ImgShowHide_MouseLeave" PreviewMouseDown="ImgShowHide_PreviewMouseDown" PreviewMouseUp="ImgShowHide_PreviewMouseUp" Source="/SkySchool;component/Resources/See.png" />
+    </Grid>
+</Page>

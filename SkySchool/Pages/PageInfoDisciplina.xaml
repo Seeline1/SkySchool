@@ -1,0 +1,33 @@
+﻿<Page x:Class="SkySchool.Pages.PageInfoDisciplina"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SkySchool.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="779" d:DesignWidth="1006"
+      Title="PageInfoDis" IsVisibleChanged="Page_IsVisibleChanged">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="750" Width="1000">
+        <TextBlock Text="Дисциплины" FontSize="50" Margin="324,162,324,518"></TextBlock>
+        <Button x:Name="BtnAdd" Content="Добавить" Margin="230,639,540,51" Click="BtnAdd_Click" ></Button>
+        <Button x:Name="BtnDel" Content="Удалить" Margin="540,639,230,51" Click="BtnDel_Click" ></Button>
+        <Image Visibility="Visible" Width="60" Height="60" x:Name="ImgHome" ToolTip="Профиль" Stretch="Fill" Margin="798,30,142,660" Source="/SkySchool;component/Resources/Home.png" MouseDown="ImgHome_MouseDown" />
+        <DataGrid FontSize="17" x:Name="DGridDis" AutoGenerateColumns="False" IsReadOnly="True" FontFamily="Comic Sans MS" Margin="60,262,60,128" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ИД" Binding="{Binding ID_Disciplina}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="Название" Binding="{Binding Nazvanie}" Width="*"></DataGridTextColumn>
+                <DataGridTemplateColumn Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="25" Height="25" Name="BtnEdit" ToolTip="Редактировать дисциплину" Click="BtnEdit_Click">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="/SkySchool;component/Resources/Edit.png"/>
+                                </Button.Background>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

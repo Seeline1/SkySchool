@@ -1,0 +1,515 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище SkySchoolModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Disciplina">
+          <Key>
+            <PropertyRef Name="ID_Disciplina" />
+          </Key>
+          <Property Name="ID_Disciplina" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nazvanie" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Gruppa">
+          <Key>
+            <PropertyRef Name="ID_Gruppi" />
+          </Key>
+          <Property Name="ID_Gruppi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nomer_Gruppi" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ocenka_Po_Predmetu">
+          <Key>
+            <PropertyRef Name="ID_Ocenka" />
+          </Key>
+          <Property Name="ID_Ocenka" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Disciplina" Type="int" Nullable="false" />
+          <Property Name="ID_Tip_Zanyatiya" Type="int" Nullable="false" />
+          <Property Name="ID_Student" Type="int" Nullable="false" />
+          <Property Name="Ocenka" Type="int" Nullable="false" />
+          <Property Name="Data" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SpisokDisciplin">
+          <Key>
+            <PropertyRef Name="ID_SpisokDisciplin" />
+          </Key>
+          <Property Name="ID_SpisokDisciplin" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_User" Type="int" Nullable="false" />
+          <Property Name="ID_Disciplina" Type="int" Nullable="false" />
+          <Property Name="ID_Tip_Zanyatiya" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="ID_Student" />
+          </Key>
+          <Property Name="ID_Student" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FIO" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ID_Gruppi" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Tip_Zanyatiya">
+          <Key>
+            <PropertyRef Name="ID_Tip_Zanyatiya" />
+          </Key>
+          <Property Name="ID_Tip_Zanyatiya" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tip" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID_User" />
+          </Key>
+          <Property Name="ID_User" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="Parol" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="FIO" Type="nvarchar" MaxLength="150" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Ocenka_Po_Predmetu_Disciplina">
+          <End Role="Disciplina" Type="Self.Disciplina" Multiplicity="1" />
+          <End Role="Ocenka_Po_Predmetu" Type="Self.Ocenka_Po_Predmetu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Disciplina">
+              <PropertyRef Name="ID_Disciplina" />
+            </Principal>
+            <Dependent Role="Ocenka_Po_Predmetu">
+              <PropertyRef Name="ID_Disciplina" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ocenka_Po_Predmetu_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="1" />
+          <End Role="Ocenka_Po_Predmetu" Type="Self.Ocenka_Po_Predmetu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID_Student" />
+            </Principal>
+            <Dependent Role="Ocenka_Po_Predmetu">
+              <PropertyRef Name="ID_Student" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ocenka_Po_Predmetu_Tip_Zanyatiya">
+          <End Role="Tip_Zanyatiya" Type="Self.Tip_Zanyatiya" Multiplicity="1" />
+          <End Role="Ocenka_Po_Predmetu" Type="Self.Ocenka_Po_Predmetu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tip_Zanyatiya">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Principal>
+            <Dependent Role="Ocenka_Po_Predmetu">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisokDisciplin_Disciplina">
+          <End Role="Disciplina" Type="Self.Disciplina" Multiplicity="1" />
+          <End Role="SpisokDisciplin" Type="Self.SpisokDisciplin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Disciplina">
+              <PropertyRef Name="ID_Disciplina" />
+            </Principal>
+            <Dependent Role="SpisokDisciplin">
+              <PropertyRef Name="ID_Disciplina" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisokDisciplin_Tip_Zanyatiya">
+          <End Role="Tip_Zanyatiya" Type="Self.Tip_Zanyatiya" Multiplicity="1" />
+          <End Role="SpisokDisciplin" Type="Self.SpisokDisciplin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tip_Zanyatiya">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Principal>
+            <Dependent Role="SpisokDisciplin">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisokDisciplin_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="SpisokDisciplin" Type="Self.SpisokDisciplin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID_User" />
+            </Principal>
+            <Dependent Role="SpisokDisciplin">
+              <PropertyRef Name="ID_User" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Gruppa">
+          <End Role="Gruppa" Type="Self.Gruppa" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Gruppa">
+              <PropertyRef Name="ID_Gruppi" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="ID_Gruppi" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище SkySchoolModelContainer">
+          <EntitySet Name="Disciplina" EntityType="Self.Disciplina" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Gruppa" EntityType="Self.Gruppa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ocenka_Po_Predmetu" EntityType="Self.Ocenka_Po_Predmetu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SpisokDisciplin" EntityType="Self.SpisokDisciplin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tip_Zanyatiya" EntityType="Self.Tip_Zanyatiya" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Ocenka_Po_Predmetu_Disciplina" Association="Self.FK_Ocenka_Po_Predmetu_Disciplina">
+            <End Role="Disciplina" EntitySet="Disciplina" />
+            <End Role="Ocenka_Po_Predmetu" EntitySet="Ocenka_Po_Predmetu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ocenka_Po_Predmetu_Student" Association="Self.FK_Ocenka_Po_Predmetu_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Ocenka_Po_Predmetu" EntitySet="Ocenka_Po_Predmetu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ocenka_Po_Predmetu_Tip_Zanyatiya" Association="Self.FK_Ocenka_Po_Predmetu_Tip_Zanyatiya">
+            <End Role="Tip_Zanyatiya" EntitySet="Tip_Zanyatiya" />
+            <End Role="Ocenka_Po_Predmetu" EntitySet="Ocenka_Po_Predmetu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisokDisciplin_Disciplina" Association="Self.FK_SpisokDisciplin_Disciplina">
+            <End Role="Disciplina" EntitySet="Disciplina" />
+            <End Role="SpisokDisciplin" EntitySet="SpisokDisciplin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisokDisciplin_Tip_Zanyatiya" Association="Self.FK_SpisokDisciplin_Tip_Zanyatiya">
+            <End Role="Tip_Zanyatiya" EntitySet="Tip_Zanyatiya" />
+            <End Role="SpisokDisciplin" EntitySet="SpisokDisciplin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisokDisciplin_User" Association="Self.FK_SpisokDisciplin_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="SpisokDisciplin" EntitySet="SpisokDisciplin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Gruppa" Association="Self.FK_Student_Gruppa">
+            <End Role="Gruppa" EntitySet="Gruppa" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SkySchoolModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Disciplina">
+          <Key>
+            <PropertyRef Name="ID_Disciplina" />
+          </Key>
+          <Property Name="ID_Disciplina" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nazvanie" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Ocenka_Po_Predmetu" Relationship="Self.FK_Ocenka_Po_Predmetu_Disciplina" FromRole="Disciplina" ToRole="Ocenka_Po_Predmetu" />
+          <NavigationProperty Name="SpisokDisciplin" Relationship="Self.FK_SpisokDisciplin_Disciplina" FromRole="Disciplina" ToRole="SpisokDisciplin" />
+        </EntityType>
+        <EntityType Name="Gruppa">
+          <Key>
+            <PropertyRef Name="ID_Gruppi" />
+          </Key>
+          <Property Name="ID_Gruppi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nomer_Gruppi" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Student_Gruppa" FromRole="Gruppa" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Ocenka_Po_Predmetu">
+          <Key>
+            <PropertyRef Name="ID_Ocenka" />
+          </Key>
+          <Property Name="ID_Ocenka" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Disciplina" Type="Int32" Nullable="false" />
+          <Property Name="ID_Tip_Zanyatiya" Type="Int32" Nullable="false" />
+          <Property Name="ID_Student" Type="Int32" Nullable="false" />
+          <Property Name="Ocenka" Type="Int32" Nullable="false" />
+          <Property Name="Data" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Disciplina" Relationship="Self.FK_Ocenka_Po_Predmetu_Disciplina" FromRole="Ocenka_Po_Predmetu" ToRole="Disciplina" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Ocenka_Po_Predmetu_Student" FromRole="Ocenka_Po_Predmetu" ToRole="Student" />
+          <NavigationProperty Name="Tip_Zanyatiya" Relationship="Self.FK_Ocenka_Po_Predmetu_Tip_Zanyatiya" FromRole="Ocenka_Po_Predmetu" ToRole="Tip_Zanyatiya" />
+        </EntityType>
+        <EntityType Name="SpisokDisciplin">
+          <Key>
+            <PropertyRef Name="ID_SpisokDisciplin" />
+          </Key>
+          <Property Name="ID_SpisokDisciplin" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_User" Type="Int32" Nullable="false" />
+          <Property Name="ID_Disciplina" Type="Int32" Nullable="false" />
+          <Property Name="ID_Tip_Zanyatiya" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Disciplina" Relationship="Self.FK_SpisokDisciplin_Disciplina" FromRole="SpisokDisciplin" ToRole="Disciplina" />
+          <NavigationProperty Name="Tip_Zanyatiya" Relationship="Self.FK_SpisokDisciplin_Tip_Zanyatiya" FromRole="SpisokDisciplin" ToRole="Tip_Zanyatiya" />
+          <NavigationProperty Name="User" Relationship="Self.FK_SpisokDisciplin_User" FromRole="SpisokDisciplin" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="ID_Student" />
+          </Key>
+          <Property Name="ID_Student" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FIO" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ID_Gruppi" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Gruppa" Relationship="Self.FK_Student_Gruppa" FromRole="Student" ToRole="Gruppa" />
+          <NavigationProperty Name="Ocenka_Po_Predmetu" Relationship="Self.FK_Ocenka_Po_Predmetu_Student" FromRole="Student" ToRole="Ocenka_Po_Predmetu" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Tip_Zanyatiya">
+          <Key>
+            <PropertyRef Name="ID_Tip_Zanyatiya" />
+          </Key>
+          <Property Name="ID_Tip_Zanyatiya" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tip" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Ocenka_Po_Predmetu" Relationship="Self.FK_Ocenka_Po_Predmetu_Tip_Zanyatiya" FromRole="Tip_Zanyatiya" ToRole="Ocenka_Po_Predmetu" />
+          <NavigationProperty Name="SpisokDisciplin" Relationship="Self.FK_SpisokDisciplin_Tip_Zanyatiya" FromRole="Tip_Zanyatiya" ToRole="SpisokDisciplin" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID_User" />
+          </Key>
+          <Property Name="ID_User" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Parol" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FIO" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="SpisokDisciplin" Relationship="Self.FK_SpisokDisciplin_User" FromRole="User" ToRole="SpisokDisciplin" />
+        </EntityType>
+        <Association Name="FK_Ocenka_Po_Predmetu_Disciplina">
+          <End Role="Disciplina" Type="Self.Disciplina" Multiplicity="1" />
+          <End Role="Ocenka_Po_Predmetu" Type="Self.Ocenka_Po_Predmetu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Disciplina">
+              <PropertyRef Name="ID_Disciplina" />
+            </Principal>
+            <Dependent Role="Ocenka_Po_Predmetu">
+              <PropertyRef Name="ID_Disciplina" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisokDisciplin_Disciplina">
+          <End Role="Disciplina" Type="Self.Disciplina" Multiplicity="1" />
+          <End Role="SpisokDisciplin" Type="Self.SpisokDisciplin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Disciplina">
+              <PropertyRef Name="ID_Disciplina" />
+            </Principal>
+            <Dependent Role="SpisokDisciplin">
+              <PropertyRef Name="ID_Disciplina" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Gruppa">
+          <End Role="Gruppa" Type="Self.Gruppa" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Gruppa">
+              <PropertyRef Name="ID_Gruppi" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="ID_Gruppi" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ocenka_Po_Predmetu_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="1" />
+          <End Role="Ocenka_Po_Predmetu" Type="Self.Ocenka_Po_Predmetu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID_Student" />
+            </Principal>
+            <Dependent Role="Ocenka_Po_Predmetu">
+              <PropertyRef Name="ID_Student" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ocenka_Po_Predmetu_Tip_Zanyatiya">
+          <End Role="Tip_Zanyatiya" Type="Self.Tip_Zanyatiya" Multiplicity="1" />
+          <End Role="Ocenka_Po_Predmetu" Type="Self.Ocenka_Po_Predmetu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tip_Zanyatiya">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Principal>
+            <Dependent Role="Ocenka_Po_Predmetu">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisokDisciplin_Tip_Zanyatiya">
+          <End Role="Tip_Zanyatiya" Type="Self.Tip_Zanyatiya" Multiplicity="1" />
+          <End Role="SpisokDisciplin" Type="Self.SpisokDisciplin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tip_Zanyatiya">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Principal>
+            <Dependent Role="SpisokDisciplin">
+              <PropertyRef Name="ID_Tip_Zanyatiya" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisokDisciplin_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="SpisokDisciplin" Type="Self.SpisokDisciplin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID_User" />
+            </Principal>
+            <Dependent Role="SpisokDisciplin">
+              <PropertyRef Name="ID_User" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SkySchoolEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Disciplina" EntityType="Self.Disciplina" />
+          <EntitySet Name="Gruppa" EntityType="Self.Gruppa" />
+          <EntitySet Name="Ocenka_Po_Predmetu" EntityType="Self.Ocenka_Po_Predmetu" />
+          <EntitySet Name="SpisokDisciplin" EntityType="Self.SpisokDisciplin" />
+          <EntitySet Name="Student" EntityType="Self.Student" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Tip_Zanyatiya" EntityType="Self.Tip_Zanyatiya" />
+          <EntitySet Name="User" EntityType="Self.User" />
+          <AssociationSet Name="FK_Ocenka_Po_Predmetu_Disciplina" Association="Self.FK_Ocenka_Po_Predmetu_Disciplina">
+            <End Role="Disciplina" EntitySet="Disciplina" />
+            <End Role="Ocenka_Po_Predmetu" EntitySet="Ocenka_Po_Predmetu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisokDisciplin_Disciplina" Association="Self.FK_SpisokDisciplin_Disciplina">
+            <End Role="Disciplina" EntitySet="Disciplina" />
+            <End Role="SpisokDisciplin" EntitySet="SpisokDisciplin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Gruppa" Association="Self.FK_Student_Gruppa">
+            <End Role="Gruppa" EntitySet="Gruppa" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ocenka_Po_Predmetu_Student" Association="Self.FK_Ocenka_Po_Predmetu_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Ocenka_Po_Predmetu" EntitySet="Ocenka_Po_Predmetu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ocenka_Po_Predmetu_Tip_Zanyatiya" Association="Self.FK_Ocenka_Po_Predmetu_Tip_Zanyatiya">
+            <End Role="Tip_Zanyatiya" EntitySet="Tip_Zanyatiya" />
+            <End Role="Ocenka_Po_Predmetu" EntitySet="Ocenka_Po_Predmetu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisokDisciplin_Tip_Zanyatiya" Association="Self.FK_SpisokDisciplin_Tip_Zanyatiya">
+            <End Role="Tip_Zanyatiya" EntitySet="Tip_Zanyatiya" />
+            <End Role="SpisokDisciplin" EntitySet="SpisokDisciplin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisokDisciplin_User" Association="Self.FK_SpisokDisciplin_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="SpisokDisciplin" EntitySet="SpisokDisciplin" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище SkySchoolModelContainer" CdmEntityContainer="SkySchoolEntities">
+          <EntitySetMapping Name="Disciplina">
+            <EntityTypeMapping TypeName="SkySchoolModel.Disciplina">
+              <MappingFragment StoreEntitySet="Disciplina">
+                <ScalarProperty Name="ID_Disciplina" ColumnName="ID_Disciplina" />
+                <ScalarProperty Name="Nazvanie" ColumnName="Nazvanie" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Gruppa">
+            <EntityTypeMapping TypeName="SkySchoolModel.Gruppa">
+              <MappingFragment StoreEntitySet="Gruppa">
+                <ScalarProperty Name="ID_Gruppi" ColumnName="ID_Gruppi" />
+                <ScalarProperty Name="Nomer_Gruppi" ColumnName="Nomer_Gruppi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ocenka_Po_Predmetu">
+            <EntityTypeMapping TypeName="SkySchoolModel.Ocenka_Po_Predmetu">
+              <MappingFragment StoreEntitySet="Ocenka_Po_Predmetu">
+                <ScalarProperty Name="ID_Ocenka" ColumnName="ID_Ocenka" />
+                <ScalarProperty Name="ID_Disciplina" ColumnName="ID_Disciplina" />
+                <ScalarProperty Name="ID_Tip_Zanyatiya" ColumnName="ID_Tip_Zanyatiya" />
+                <ScalarProperty Name="ID_Student" ColumnName="ID_Student" />
+                <ScalarProperty Name="Ocenka" ColumnName="Ocenka" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpisokDisciplin">
+            <EntityTypeMapping TypeName="SkySchoolModel.SpisokDisciplin">
+              <MappingFragment StoreEntitySet="SpisokDisciplin">
+                <ScalarProperty Name="ID_SpisokDisciplin" ColumnName="ID_SpisokDisciplin" />
+                <ScalarProperty Name="ID_User" ColumnName="ID_User" />
+                <ScalarProperty Name="ID_Disciplina" ColumnName="ID_Disciplina" />
+                <ScalarProperty Name="ID_Tip_Zanyatiya" ColumnName="ID_Tip_Zanyatiya" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Student">
+            <EntityTypeMapping TypeName="SkySchoolModel.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="ID_Student" ColumnName="ID_Student" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+                <ScalarProperty Name="ID_Gruppi" ColumnName="ID_Gruppi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SkySchoolModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tip_Zanyatiya">
+            <EntityTypeMapping TypeName="SkySchoolModel.Tip_Zanyatiya">
+              <MappingFragment StoreEntitySet="Tip_Zanyatiya">
+                <ScalarProperty Name="ID_Tip_Zanyatiya" ColumnName="ID_Tip_Zanyatiya" />
+                <ScalarProperty Name="Tip" ColumnName="Tip" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="SkySchoolModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ID_User" ColumnName="ID_User" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Parol" ColumnName="Parol" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

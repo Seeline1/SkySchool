@@ -1,0 +1,33 @@
+﻿<Page x:Class="SkySchool.Pages.AddEditPageUser"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SkySchool.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="779" d:DesignWidth="1006"
+      Title="AddEditPageUser" IsVisibleChanged="Page_IsVisibleChanged">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="750" Width="1000">
+        <TextBlock Text="Информация о пльзователе" FontSize="50" Height="70" Margin="162,122,162,558"/>
+        <Button x:Name="BtnSave" Content="Сохранить" Margin="385,639,385,51" Click="BtnSave_Click"></Button>
+        <Image Visibility="Visible" Width="60" Height="60" x:Name="ImgBck" ToolTip="Назад" Stretch="Fill" Margin="798,30,142,660" Source="/SkySchool;component/Resources/Bck.png" MouseDown="ImgBck_MouseDown" />
+        <TextBlock Text="ФИО:" FontSize="30" Margin="60,212,798,498"></TextBlock>
+        <TextBlock Text="Роль:" FontSize="30" Margin="60,262,798,448"></TextBlock>
+        <TextBlock Text="Логин:" FontSize="30" Margin="60,312,798,398"></TextBlock>
+        <TextBlock Text="Пароль:" FontSize="30" Margin="60,362,798,348"></TextBlock>
+        <TextBlock Text="Дисциплины:" FontSize="30" Margin="395,412,395,298"></TextBlock>
+        <TextBox Text="{Binding FIO}" x:Name="TxtFIO" MaxLength="150" Width="400" Height="40" Margin="300,212,300,498"/>
+        <TextBox Text="{Binding Role}" x:Name="TxtRole" MaxLength="5" Width="400" Height="40" Margin="300,262,300,448"/>
+        <TextBox Text="{Binding Login}" x:Name="TxtLog" MaxLength="11" Width="400" Height="40" Margin="300,312,300,398"/>
+        <TextBox Text="{Binding Parol}" x:Name="TxtPass" MaxLength="115" Width="400" Height="40" Margin="300,362,300,348"/>
+        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgAdd" ToolTip="Добавить дисциплины пользователя" Stretch="Fill" Margin="890,556,60,144" Source="/SkySchool;component/Resources/Add.png" MouseDown="ImgAdd_MouseDown" />
+        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgDel" ToolTip="Удалить дисциплины пользователя" Stretch="Fill" Margin="890,483,60,217" Source="/SkySchool;component/Resources/Delete.png" MouseDown="ImgDel_MouseDown" />
+        <DataGrid FontSize="17" x:Name="DGridDisciplini" AutoGenerateColumns="False" IsReadOnly="True" FontFamily="Comic Sans MS" Margin="115,462,115,124">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дисциплина" Binding="{Binding Disciplina.Nazvanie}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="Тип Занятия" Binding="{Binding Tip_Zanyatiya.Tip}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID_SpisokDisciplin}" Width="100"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

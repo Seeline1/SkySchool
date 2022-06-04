@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="09ff9af107c94b409b0f682272b93b5c" Name="Diagram1">
+        <EntityTypeShape EntityType="SkySchoolModel.Disciplina" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.Gruppa" Width="1.5" PointX="1.5" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.Ocenka_Po_Predmetu" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.SpisokDisciplin" Width="1.5" PointX="6" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.Student" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.sysdiagrams" Width="1.5" PointX="3.75" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.Tip_Zanyatiya" Width="1.5" PointX="0.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SkySchoolModel.User" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="SkySchoolModel.FK_Ocenka_Po_Predmetu_Disciplina" ManuallyRouted="false" />
+        <AssociationConnector Association="SkySchoolModel.FK_SpisokDisciplin_Disciplina" ManuallyRouted="false" />
+        <AssociationConnector Association="SkySchoolModel.FK_Student_Gruppa" ManuallyRouted="false" />
+        <AssociationConnector Association="SkySchoolModel.FK_Ocenka_Po_Predmetu_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="SkySchoolModel.FK_Ocenka_Po_Predmetu_Tip_Zanyatiya" ManuallyRouted="false" />
+        <AssociationConnector Association="SkySchoolModel.FK_SpisokDisciplin_Tip_Zanyatiya" ManuallyRouted="false" />
+        <AssociationConnector Association="SkySchoolModel.FK_SpisokDisciplin_User" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

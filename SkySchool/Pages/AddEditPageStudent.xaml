@@ -1,0 +1,19 @@
+﻿<Page x:Class="SkySchool.Pages.AddEditPageStudent"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SkySchool.Pages"
+     mc:Ignorable="d" 
+      d:DesignHeight="779" d:DesignWidth="1006"
+      Title="AddEditPageStudent">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="750" Width="1000">
+        <TextBlock Text="Информация о студенте" FontSize="50" Height="70" Margin="162,122,162,558"/>
+        <Button x:Name="BtnSave" Content="Сохранить" Margin="385,639,385,51" Click="BtnSave_Click"></Button>
+        <Image Visibility="Visible" Width="60" Height="60" x:Name="ImgBck" ToolTip="Назад" Stretch="Fill" Margin="798,30,142,660" Source="/SkySchool;component/Resources/Bck.png" MouseDown="ImgBck_MouseDown" />
+        <TextBlock Text="ФИО:" FontSize="30" Margin="60,262,742,448"></TextBlock>
+        <TextBox Text="{Binding FIO}" x:Name="TxtFIO" MaxLength="150" Width="400" Height="40" Margin="300,262,300,448"/>
+        <TextBlock Text="Номер группы:" FontSize="30" Margin="60,332,725,378"></TextBlock>
+        <ComboBox x:Name="ComboBoxNG" Text="{Binding Gruppa.Nomer_Gruppi}" DisplayMemberPath="Nomer_Gruppi" Margin="300,332,300,375" ></ComboBox>
+    </Grid>
+</Page>
