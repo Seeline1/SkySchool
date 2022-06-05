@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,26 +11,28 @@ namespace SkySchool.Pages
     /// <summary>
     /// Логика взаимодействия для PageAdmin.xaml
     /// </summary>
-    public partial class PageAdmin : Page
+    public partial class PageAdmin : Page, IDisposable
     {
-        public static SkySchoolEntities _coontext = new SkySchoolEntities();
+        public static SkySchoolEntities _context;
 
         public PageAdmin()
         {
             InitializeComponent();
+
+            _context = new SkySchoolEntities();
             TBLogin.Text = Manager.CurrentUser.Login.ToString();
             TBName.Text = Manager.CurrentUser.FIO.ToString();
             TBParol.Text = "**********";
             TBRole.Text = Manager.CurrentUser.Role.ToString();
-            DGridDisciplini.ItemsSource = _coontext.SpisokDisciplin.Where(h => h.User.Login == TBLogin.Text).ToList();
+            DGridDisciplini.ItemsSource = _context.SpisokDisciplin.Where(h => h.User.Login == TBLogin.Text).ToList();
         }
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (Visibility == Visibility.Visible)
             {
-                Manager.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
-                DGridDisciplini.ItemsSource = _coontext.SpisokDisciplin.Where(h => h.User.Login == TBLogin.Text).ToList();
+                _context.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                DGridDisciplini.ItemsSource = _context.SpisokDisciplin.Where(h => h.User.Login == TBLogin.Text).ToList();
             }
         }
 
@@ -86,6 +89,11 @@ namespace SkySchool.Pages
         private void Students_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new PageInfoStudent());
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

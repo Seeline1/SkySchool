@@ -10,7 +10,7 @@
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="750" Width="1000">
         <TextBlock Text="Профиль" FontSize="50" Width="235" Height="70" Margin="382,162,382,518"></TextBlock>
         <Button x:Name="MyPlans" Content="Мои планы" Margin="60,51,710,639" Click="MyPlans_Click"></Button>
-        <Button x:Name="MyReport" Content="Мои отчёты" Margin="385,51,385,639" Click="MyReport_Click"></Button>
+        <Button x:Name="MyReport" Content="Мои отчёты" Margin="385,51,385,639" Click="MyReports_Click"></Button>
         <Image Visibility="Visible" Width="60" Height="60" x:Name="ImgOut" ToolTip="Выйти из профиля" Stretch="Fill" Margin="798,51,142,639" Source="/SkySchool;component/Resources/Out.png" MouseDown="ImgOut_MouseDown" />
         <TextBlock Text="Имя:" FontSize="30" Margin="60,262,665,448"></TextBlock>
         <TextBlock Text="Логин:" FontSize="30" Margin="60,362,665,348"></TextBlock>

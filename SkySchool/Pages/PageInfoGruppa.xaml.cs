@@ -1,41 +1,44 @@
-﻿using SkySchool.Classes;
-using SkySchool.Pages;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using SkySchool.Classes;
+using SkySchool.Pages;
 
 namespace SkySchool.Pages
 {
     /// <summary>
     /// Логика взаимодействия для PageInfoGruppa.xaml
     /// </summary>
-    public partial class PageInfoGruppa : Page
+    public partial class PageInfoGruppa : Page, IDisposable
     {
-        public static SkySchoolEntities _coontext = new SkySchoolEntities();
+        private readonly SkySchoolEntities _context;
 
         public PageInfoGruppa()
         {
             InitializeComponent();
-            DGridGr.ItemsSource = _coontext.Gruppa.OrderBy(h => h.Nomer_Gruppi).ToList();
+
+            _context = new SkySchoolEntities();
+
+            DGridGr.ItemsSource = _context.Gruppa.OrderBy(h => h.Nomer_Gruppi).ToList();
         }
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (Visibility == Visibility.Visible)
             {
-                Manager.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
-                DGridGr.ItemsSource = Manager.GetContext().Gruppa.ToList();
+                _context.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                DGridGr.ItemsSource = _context.Gruppa.ToList();
             }
         }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new AddEditPageGruppa(new Gruppa()));
+            Manager.MainFrame.Navigate(new AddEditPageGruppa());
         }
 
-        private void BtnDel_Click(object sender, RoutedEventArgs e)
+        private async void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             var GrForRemoving = DGridGr.SelectedItems.Cast<Gruppa>().ToList();
 
@@ -44,11 +47,11 @@ namespace SkySchool.Pages
             {
                 try
                 {
-                    Manager.GetContext().Gruppa.RemoveRange(GrForRemoving);
-                    Manager.GetContext().SaveChanges();
+                    _context.Gruppa.RemoveRange(GrForRemoving);
+                    await _context.SaveChangesAsync();
                     MessageBox.Show("Данные удалены!");
 
-                    DGridGr.ItemsSource = Manager.GetContext().Gruppa.ToList();
+                    DGridGr.ItemsSource = _context.Gruppa.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -60,6 +63,11 @@ namespace SkySchool.Pages
         private void ImgHome_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Manager.MainFrame.GoBack();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

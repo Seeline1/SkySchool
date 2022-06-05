@@ -20,8 +20,9 @@
         <TextBox Text="{Binding Role}" x:Name="TxtRole" MaxLength="5" Width="400" Height="40" Margin="300,262,300,448"/>
         <TextBox Text="{Binding Login}" x:Name="TxtLog" MaxLength="11" Width="400" Height="40" Margin="300,312,300,398"/>
         <TextBox Text="{Binding Parol}" x:Name="TxtPass" MaxLength="115" Width="400" Height="40" Margin="300,362,300,348"/>
-        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgAdd" ToolTip="Добавить дисциплины пользователя" Stretch="Fill" Margin="890,556,60,144" Source="/SkySchool;component/Resources/Add.png" MouseDown="ImgAdd_MouseDown" />
-        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgDel" ToolTip="Удалить дисциплины пользователя" Stretch="Fill" Margin="890,483,60,217" Source="/SkySchool;component/Resources/Delete.png" MouseDown="ImgDel_MouseDown" />
+        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgAdd" ToolTip="Добавить дисциплины пользователя" Stretch="Fill" Margin="890,519,60,181" Source="/SkySchool;component/Resources/Add.png" MouseDown="ImgAdd_MouseDown" />
+        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgDel" ToolTip="Удалить дисциплины пользователя" Stretch="Fill" Margin="890,462,60,238" Source="/SkySchool;component/Resources/Delete.png" MouseDown="ImgDel_MouseDown" />
+        <Image Visibility="Visible" Width="50" Height="50" x:Name="ImgUpdate" ToolTip="Удалить дисциплины пользователя" Stretch="Fill" Margin="890,576,60,124" Source="/SkySchool;component/Resources/Update.png" MouseDown="ImgUpdate_MouseDown" />
         <DataGrid FontSize="17" x:Name="DGridDisciplini" AutoGenerateColumns="False" IsReadOnly="True" FontFamily="Comic Sans MS" Margin="115,462,115,124">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дисциплина" Binding="{Binding Disciplina.Nazvanie}" Width="*"></DataGridTextColumn>

@@ -31,13 +31,10 @@ namespace SkySchool.Pages
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            using (SkySchoolEntities db = new SkySchoolEntities())
+            if (Visibility == Visibility.Visible)
             {
-                if (Visibility == Visibility.Visible)
-                {
-                    db.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
-                    DGridDis.ItemsSource = db.Disciplina.ToList();
-                }
+                _context.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                DGridDis.ItemsSource = _context.Disciplina.ToList();
             }
         }
 
@@ -55,14 +52,11 @@ namespace SkySchool.Pages
             {
                 try
                 {
-                    using (SkySchoolEntities db = new SkySchoolEntities())
-                    {
-                        db.Disciplina.RemoveRange(DisForRemoving);
-                        await db.SaveChangesAsync();
-                        MessageBox.Show("Данные удалены!");
+                    _context.Disciplina.RemoveRange(DisForRemoving);
+                    await _context.SaveChangesAsync();
+                    MessageBox.Show("Данные удалены!");
 
-                        DGridDis.ItemsSource = db.Disciplina.ToList();
-                    }
+                    DGridDis.ItemsSource = _context.Disciplina.ToList();
                 }
                 catch (Exception ex)
                 {

@@ -11,14 +11,17 @@ namespace SkySchool.Pages
     /// <summary>
     /// Логика взаимодействия для PageInfo.xaml
     /// </summary>
-    public partial class PageInfoStudent : Page
+    public partial class PageInfoStudent : Page, IDisposable
     {
-        public static SkySchoolEntities _coontext = new SkySchoolEntities();
+        public readonly SkySchoolEntities _context;
 
         public PageInfoStudent()
         {
             InitializeComponent();
-            DGridStudent.ItemsSource = _coontext.Student.OrderBy(h => h.ID_Gruppi).ToList();
+
+            _context = new SkySchoolEntities();
+
+            DGridStudent.ItemsSource = _context.Student.OrderBy(h => h.ID_Gruppi).ToList();
         }
 
         private void ImgHome_MouseDown(object sender, MouseButtonEventArgs e)
@@ -30,8 +33,8 @@ namespace SkySchool.Pages
         {
             if (Visibility == Visibility.Visible)
             {
-                Manager.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
-                DGridStudent.ItemsSource = Manager.GetContext().Student.ToList();
+                _context.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                DGridStudent.ItemsSource = _context.Student.ToList();
             }
         }
 
@@ -40,7 +43,7 @@ namespace SkySchool.Pages
             Manager.MainFrame.Navigate(new AddEditPageStudent(new Student()));
         }
 
-        private void BtnDel_Click(object sender, RoutedEventArgs e)
+        private async void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             var StudentsForRemoving = DGridStudent.SelectedItems.Cast<Student>().ToList();
 
@@ -49,11 +52,11 @@ namespace SkySchool.Pages
             {
                 try
                 {
-                    Manager.GetContext().Student.RemoveRange(StudentsForRemoving);
-                    Manager.GetContext().SaveChanges();
+                    _context.Student.RemoveRange(StudentsForRemoving);
+                    await _context.SaveChangesAsync();
                     MessageBox.Show("Данные удалены!");
 
-                    DGridStudent.ItemsSource = Manager.GetContext().Student.ToList();
+                    DGridStudent.ItemsSource = _context.Student.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -65,6 +68,11 @@ namespace SkySchool.Pages
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new AddEditPageStudent((sender as Button).DataContext as Student));
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

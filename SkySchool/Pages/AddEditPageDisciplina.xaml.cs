@@ -17,22 +17,23 @@ namespace SkySchool.Pages
     {
         private readonly SkySchoolEntities _context;
         private Disciplina _currentDis;
+        private string dis = "";
 
         public AddEditPageDisciplina(Disciplina selectedDis)
         {
             InitializeComponent();
             
             _currentDis = new Disciplina();
+            _context = new SkySchoolEntities();
 
             if (selectedDis != null)
             {
                 _currentDis = selectedDis;
             }
 
-            _context = new SkySchoolEntities();
-
-            string d = _currentDis.Nazvanie;
-            TxtDis.Text = d;
+            DataContext = _currentDis;
+            TxtDis.Text = _currentDis.Nazvanie;
+            dis = _currentDis.Nazvanie;
         }
 
         public void Dispose()
@@ -42,75 +43,73 @@ namespace SkySchool.Pages
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("2" + _currentDis.Nazvanie);
-            using (SkySchoolEntities db = new SkySchoolEntities())
+            StringBuilder errors = new StringBuilder();
+
+            if (string.IsNullOrWhiteSpace(TxtDis.Text))
             {
-                StringBuilder errors = new StringBuilder();
+                errors.AppendLine("Укажите название");
+            }
 
-                if (string.IsNullOrWhiteSpace(TxtDis.Text))
+            Disciplina tempDis = await _context.Disciplina.FirstOrDefaultAsync(p => p.Nazvanie.Equals(_currentDis.Nazvanie));
+            if (TxtDis.Text == dis) { }
+            else if (tempDis != null)
+            {
+                errors.AppendLine("Такая дисциплина уже существует");
+            }
+
+            if (TxtDis.Text.Length <= 100)
+            {
+                bool ru = true;
+
+                for (int i = 0; i < TxtDis.Text.Length; i++)
                 {
-                    errors.AppendLine("Укажите название");
-                }
-                //MessageBox.Show("1" + _currentDis.Nazvanie);
-
-                string a = TxtDis.Text;
-
-                Disciplina tempDis = await db.Disciplina.FirstOrDefaultAsync(p => p.Nazvanie.Equals(a));
-                
-                if (tempDis != null)
-                {
-                    errors.AppendLine("Такая дисциплина уже существует");
-                }
-
-                if (TxtDis.Text.Length <= 100)
-                {
-                    bool ru = true;
-
-                    for (int i = 0; i < TxtDis.Text.Length; i++)
+                    if (TxtDis.Text[i] >= 'A' && TxtDis.Text[i] <= 'Z')
                     {
-                        if (TxtDis.Text[i] >= 'A' && TxtDis.Text[i] <= 'Z')
-                        {
-                            ru = false;
-                        }
-
-                        if (TxtDis.Text[i] >= 'a' && TxtDis.Text[i] <= 'z')
-                        {
-                            ru = false;
-                        }
+                        ru = false;
                     }
 
-                    if (!ru)
+                    if (TxtDis.Text[i] >= 'a' && TxtDis.Text[i] <= 'z')
                     {
-                        errors.AppendLine("Доступна только русская раскладка");
+                        ru = false;
                     }
                 }
-                else
-                {
-                    errors.AppendLine("Название должно содержать до 100 символов");
-                }
 
-                if (errors.Length > 0)
+                if (!ru)
                 {
-                    MessageBox.Show(errors.ToString());
-                    return;
+                    errors.AppendLine("Доступна только русская раскладка");
                 }
+            }
+            else
+            {
+                errors.AppendLine("Название должно содержать до 100 символов");
+            }
 
-                if (_currentDis.ID_Disciplina == 0)
-                {
-                    db.Disciplina.Add(new Disciplina()
-                    { Nazvanie = TxtDis.Text });
-                }
+            if (errors.Length > 0)
+            {
+                MessageBox.Show(errors.ToString());
+                return;
+            }
 
-                try
-                {
-                    await db.SaveChangesAsync();
-                    MessageBox.Show("Информация сохранена!");
-                    Manager.MainFrame.GoBack();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message.ToString());
-                }
+            if (_currentDis.ID_Disciplina == 0)
+            {
+                _context.Disciplina.Add(new Disciplina()
+                { Nazvanie = TxtDis.Text });
+            }
+            else
+            {
+                var disciplinaToUpdate = await _context.Disciplina.FirstOrDefaultAsync(x => x.ID_Disciplina == _currentDis.ID_Disciplina);
+                disciplinaToUpdate.ID_Disciplina = _currentDis.ID_Disciplina;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                MessageBox.Show("Информация сохранена!");
+                Manager.MainFrame.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
             }
         }
 

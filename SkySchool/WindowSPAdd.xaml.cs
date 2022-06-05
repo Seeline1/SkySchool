@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -10,30 +11,50 @@ namespace SkySchool
     /// <summary>
     /// Логика взаимодействия для WindowSPAdd.xaml
     /// </summary>
-    public partial class WindowSPAdd : Window
+    public partial class WindowSPAdd : Window, IDisposable
     {
-        private SpisokDisciplin _currentSP = new SpisokDisciplin();
+        private SpisokDisciplin _currentSP;
+        public readonly SkySchoolEntities _context = new SkySchoolEntities();
+        private int idu = 0;
 
-        public WindowSPAdd(SpisokDisciplin selectedSP)
+        public WindowSPAdd(int id)
         {
             InitializeComponent();
-
-            if (selectedSP != null)
-                _currentSP = selectedSP;
+            idu = id;
+            _currentSP = new SpisokDisciplin();
+            _context = new SkySchoolEntities();
 
             DataContext = _currentSP;
-            ComboBoxD.ItemsSource = Manager.GetContext().Disciplina.ToList();
-            ComboBoxT.ItemsSource = Manager.GetContext().Tip_Zanyatiya.ToList();
+            ComboBoxD.ItemsSource = _context.Disciplina.ToList();
+            ComboBoxT.ItemsSource = _context.Tip_Zanyatiya.ToList();
         }
 
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder errors = new StringBuilder();
+            Disciplina dis = ComboBoxD.SelectedItem as Disciplina;
+            Tip_Zanyatiya tip = ComboBoxT.SelectedItem as Tip_Zanyatiya;
 
-            if (string.IsNullOrWhiteSpace(Convert.ToString(_currentSP.ID_Disciplina)))
-                errors.AppendLine("Укажите дисциплину");
-            if (string.IsNullOrWhiteSpace(Convert.ToString(_currentSP.ID_Tip_Zanyatiya)))
-                errors.AppendLine("Укажите вид занятия");
+            if (dis != null)
+            {
+                if(tip != null)
+                {
+                    SpisokDisciplin tempSD = await _context.SpisokDisciplin.FirstOrDefaultAsync(p => p.ID_User.Equals(idu) && p.ID_Disciplina.Equals(dis.ID_Disciplina) && p.ID_Tip_Zanyatiya.Equals(tip.ID_Tip_Zanyatiya));
+
+                    if (tempSD != null)
+                    {
+                        errors.AppendLine("Эта дисциплина уже закреплена за преподавателем");
+                    }
+                }
+                else
+                {
+                    errors.AppendLine("Выберите вид занятия");
+                }
+            }
+            else
+            {
+                errors.AppendLine("Выберите дисциплину");
+            }
 
             if (errors.Length > 0)
             {
@@ -41,19 +62,26 @@ namespace SkySchool
                 return;
             }
 
-            if (_currentSP.ID_SpisokDisciplin == 0)
-                Manager.GetContext().SpisokDisciplin.Add(new SpisokDisciplin() { ID_User = _currentSP.ID_User, Disciplina = ComboBoxD.SelectedItem as Disciplina, Tip_Zanyatiya = ComboBoxT.SelectedItem as Tip_Zanyatiya });
+            _context.SpisokDisciplin.Add(new SpisokDisciplin()
+            {
+                ID_User = idu, Disciplina = ComboBoxD.SelectedItem as Disciplina, Tip_Zanyatiya = ComboBoxT.SelectedItem as Tip_Zanyatiya
+            });
 
             try
             {
-                Manager.GetContext().SaveChanges();
+                await _context.SaveChangesAsync();
                 MessageBox.Show("Информация сохранена!");
-                Manager.MainFrame.GoBack();
+                this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString());
             }
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

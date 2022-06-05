@@ -5,11 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SkySchool"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterOwner"
-        Title="Закрепление дисциплины" Height="241" Width="258" Background="AliceBlue" Icon="Resources/Sky_ico.ico">
-    <Grid Background="Aqua" Width="250" Height="210">
-        <ComboBox Text="{Binding Disciplina.Nazvanie}" x:Name="ComboBoxD" Width="230" Height="60" DisplayMemberPath="Nazvanie" Margin="10,10,10,140"/>
-        <ComboBox Text="{Binding Tip_Zanyatiya.Tip}" x:Name="ComboBoxT" Width="230" Height="60" DisplayMemberPath="Tip" Margin="10,75"/>
-        <Button Content="Сохранить" Name="BtnSave" Click="BtnSave_Click" Margin="10,140,10,10"/>
+        WindowStartupLocation="CenterScreen"
+        Title="Закрепление дисциплины" Height="241" Width="628" Icon="Resources/Sky_ico.ico">
+    <Window.Background>
+        <ImageBrush ImageSource="Resources/Sky.jpg"/>
+    </Window.Background>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="620" Height="210">
+        <WrapPanel HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Orientation="Vertical">
+            <ComboBox Text="{Binding Disciplina.Nazvanie}" Margin="5" x:Name="ComboBoxD" Width="600" Height="60" DisplayMemberPath="Nazvanie"/>
+            <ComboBox Text="{Binding Tip_Zanyatiya.Tip}" x:Name="ComboBoxT" Width="600" Height="60" DisplayMemberPath="Tip"/>
+        </WrapPanel>
+        <Button Content="Сохранить" x:Name="BtnSave" Click="BtnSave_Click" Margin="10,140,10,10"/>
     </Grid>
 </Window>

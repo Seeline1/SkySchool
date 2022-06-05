@@ -26,15 +26,18 @@ namespace SkySchool.Pages
             InitializeComponent();
 
             _currentStud = new Student();
+            _context = new SkySchoolEntities();
 
             if (selectedStud != null)
+            {
                 _currentStud = selectedStud;
-
-            _context = new SkySchoolEntities();
+            }
 
             DataContext = _currentStud;
             TxtFIO.Text = _currentStud.FIO;
+
             ComboBoxNG.ItemsSource = _context.Gruppa.ToList();
+
             fio = _currentStud.FIO;
             ng = _currentStud.ID_Gruppi;
         }
@@ -46,80 +49,77 @@ namespace SkySchool.Pages
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            using (SkySchoolEntities db = new SkySchoolEntities())
+            StringBuilder errors = new StringBuilder();
+            Gruppa grupp = ComboBoxNG.SelectedItem as Gruppa;
+
+            if (!string.IsNullOrWhiteSpace(_currentStud.FIO))
             {
-                StringBuilder errors = new StringBuilder();
-
-                Student tempStud = await _context.Student.FirstOrDefaultAsync(p => p.FIO.Equals(_currentStud.FIO));
-
-                if (TxtFIO.Text == fio) { }
-                else if (tempStud != null)
+                if (grupp != null)
                 {
-                    Student tempNG = await _context.Student.FirstOrDefaultAsync(p => p.ID_Gruppi.Equals(_currentStud.ID_Gruppi));
-                    
-                    if (ComboBoxNG.Text == Convert.ToString(ng)) { }
-                    else if (tempNG != null)
+                    Student tempStud = await _context.Student.FirstOrDefaultAsync(p => p.FIO.Equals(_currentStud.FIO) && p.ID_Gruppi.Equals(grupp.ID_Gruppi));
+
+                    if (TxtFIO.Text == fio && ComboBoxNG.Text == Convert.ToString(ng)) { }
+                    else if (tempStud != null)
                     {
                         errors.AppendLine("Такой студент уже существует");
                     }
                 }
-
-                if (string.IsNullOrWhiteSpace(_currentStud.FIO))
-                {
-                    errors.AppendLine("Укажите ФИО");
-                }    
-
-                if (string.IsNullOrWhiteSpace(Convert.ToString(_currentStud.ID_Gruppi)))
+                else
                 {
                     errors.AppendLine("Укажите номер группы");
                 }
+            }
+            else
+            {
+                errors.AppendLine("Укажите ФИО");
+            }
 
-                if (TxtFIO.Text.Length < 150)
+            if (TxtFIO.Text.Length < 150)
+            {
+                for (int i = 0; i < TxtFIO.Text.Length; i++)
                 {
-                    for (int i = 0; i < TxtFIO.Text.Length; i++)
+                    if (TxtFIO.Text[i] >= '0' && TxtFIO.Text[i] <= '9')
                     {
-                        if (TxtFIO.Text[i] >= '0' && TxtFIO.Text[i] <= '9')
-                        {
-                            errors.AppendLine("ФИО может содержать только буквы");
-                            break;
-                        }
+                        errors.AppendLine("ФИО может содержать только буквы");
+                        break;
                     }
                 }
-                else
-                {
-                    errors.AppendLine("Фио не может содержать более 150 символов");
-                }
-
-                if (errors.Length > 0)
-                {
-                    MessageBox.Show(errors.ToString());
-                    return;
-                }
-
-                Gruppa gupp = ComboBoxNG.SelectedItem as Gruppa;
-
-                if (_currentStud.ID_Student == 0)
-                {
-                    _context.Student.Add(new Student()
-                    { FIO = TxtFIO.Text, ID_Gruppi = gupp.ID_Gruppi });
-                }
-                else
-                {
-                    var studentToUpdate = await _context.Student.FirstOrDefaultAsync(x => x.ID_Student == _currentStud.ID_Student);
-                    studentToUpdate.ID_Gruppi = gupp.ID_Gruppi;
-                }
-
-                try
-                {
-                    await db.SaveChangesAsync();
-                    MessageBox.Show("Информация сохранена!");
-                    Manager.MainFrame.GoBack();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message.ToString());
-                }
             }
+            else
+            {
+                errors.AppendLine("Фио не может содержать более 150 символов");
+            }
+
+            if (errors.Length > 0)
+            {
+                MessageBox.Show(errors.ToString());
+                return;
+            }
+
+            Gruppa gupp = ComboBoxNG.SelectedItem as Gruppa;
+
+            if (_currentStud.ID_Student == 0)
+            {
+                _context.Student.Add(new Student()
+                { FIO = TxtFIO.Text, ID_Gruppi = gupp.ID_Gruppi });
+            }
+            else
+            {
+                var studentToUpdate = await _context.Student.FirstOrDefaultAsync(x => x.ID_Student == _currentStud.ID_Student);
+                studentToUpdate.FIO = TxtFIO.Text;
+                studentToUpdate.ID_Gruppi = gupp.ID_Gruppi;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                MessageBox.Show("Информация сохранена!");
+                Manager.MainFrame.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }         
         }
 
         private void ImgBck_MouseDown(object sender, MouseButtonEventArgs e)

@@ -18,20 +18,16 @@ namespace SkySchool.Pages
     {
         private readonly SkySchoolEntities _context;
         private Gruppa _currentGr;
+        private int ng = 0;
 
-        public AddEditPageGruppa(Gruppa selectedGr)
+        public AddEditPageGruppa()
         {
             InitializeComponent();
 
             _currentGr = new Gruppa();
-
-            if (selectedGr != null)
-            {
-                _currentGr = selectedGr;
-            }
-
             _context = new SkySchoolEntities();
 
+            DataContext = _currentGr;
             TxtNG.Text = Convert.ToString(_currentGr.Nomer_Gruppi);
         }
 
@@ -42,58 +38,55 @@ namespace SkySchool.Pages
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            using (SkySchoolEntities db = new SkySchoolEntities())
-            {
-                StringBuilder errors = new StringBuilder();
+            StringBuilder errors = new StringBuilder();
 
-                if (TxtNG.Text.Length == 4)
+            if (TxtNG.Text.Length == 4)
+            {
+                for (int i = 0; i < TxtNG.Text.Length; i++)
                 {
-                    for (int i = 0; i < TxtNG.Text.Length; i++)
+                    if (TxtNG.Text[i] >= '0' && TxtNG.Text[i] <= '9')
                     {
-                        if (TxtNG.Text[i] >= '0' && TxtNG.Text[i] <= '9') { }
-                        else
-                        {
-                            errors.AppendLine("Номер группы должен состоять только из цифр");
-                            break;
-                        }
+                        ng = Convert.ToInt32(TxtNG.Text);
+                    }
+                    else
+                    {
+                        errors.AppendLine("Номер группы должен состоять только из цифр");
+                        break;
                     }
                 }
-                else
-                {
-                    errors.AppendLine("Номер группы должен состоять из 4 цифр");
-                }
+            }
+            else
+            {
+                errors.AppendLine("Номер группы должен состоять из 4 цифр");
+            }
 
-                int a = Convert.ToInt32(TxtNG.Text);
+            Gruppa tempGr = await _context.Gruppa.FirstOrDefaultAsync(p => p.Nomer_Gruppi.Equals(ng));
+            if (tempGr != null)
+            {
+                MessageBox.Show("Группа с таким номером уже существует");
+                return;
+            }
 
-                Gruppa tempGr = await db.Gruppa.FirstOrDefaultAsync(p => p.Nomer_Gruppi.Equals(a));
+            if (errors.Length > 0)
+            {
+                MessageBox.Show(errors.ToString());
+                return;
+            }
 
-                if (tempGr != null)
-                {
-                    MessageBox.Show("Группа с таким номером уже существует");
-                    return;
-                }
+            _context.Gruppa.Add(new Gruppa()
+            {
+                Nomer_Gruppi = Convert.ToInt32(TxtNG.Text)
+            });
 
-                if (errors.Length > 0)
-                {
-                    MessageBox.Show(errors.ToString());
-                    return;
-                }
-
-                _context.Gruppa.Add(new Gruppa()
-                {
-                    Nomer_Gruppi = Convert.ToInt32(TxtNG.Text)
-                });
-
-                try
-                {
-                    await db.SaveChangesAsync();
-                    MessageBox.Show("Информация сохранена!");
-                    Manager.MainFrame.GoBack();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message.ToString());
-                }
+            try
+            {
+                await _context.SaveChangesAsync();
+                MessageBox.Show("Информация сохранена!");
+                Manager.MainFrame.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
             }
         }
 

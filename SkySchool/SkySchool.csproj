@@ -266,6 +266,7 @@
       <DependentUpon>ModelSkySchool.edmx</DependentUpon>
       <LastGenOutput>ModelSkySchool.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\Update.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -19,9 +19,13 @@ namespace SkySchool.Pages
         private void PassBoxParol_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (PassBoxParol.Password.Length > 0)
+            {
                 ImgShowHide.Visibility = Visibility.Visible;
+            }
             else
+            {
                 ImgShowHide.Visibility = Visibility.Hidden;
+            }
         }
 
         private void ImgShowHide_MouseLeave(object sender, MouseEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using SkySchool.Classes;
 using SkySchool.Pages;
 
@@ -13,7 +14,7 @@ namespace SkySchool
         {
             InitializeComponent();
             Manager.MainFrame = MainFrame;
-            Manager.MainFrame.Navigate(new PageInfoDisciplina());
+            Manager.MainFrame.Navigate(new PageAuth());
         }
     }
 }

@@ -11,22 +11,25 @@ namespace SkySchool.Pages
     /// <summary>
     /// Логика взаимодействия для PageInfo.xaml
     /// </summary>
-    public partial class PageInfoUser : Page
+    public partial class PageInfoUser : Page, IDisposable
     {
-        public static SkySchoolEntities _coontext = new SkySchoolEntities();
+        private readonly SkySchoolEntities _context;
 
         public PageInfoUser()
         {
             InitializeComponent();
-            DGridUser.ItemsSource = _coontext.User.OrderBy(h => h.FIO).ToList();
+
+            _context = new SkySchoolEntities();
+
+            DGridUser.ItemsSource = _context.User.OrderBy(h => h.FIO).ToList();
         }
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (Visibility == Visibility.Visible)
             {
-                Manager.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
-                DGridUser.ItemsSource = Manager.GetContext().User.ToList();
+                _context.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                DGridUser.ItemsSource = _context.User.ToList();
             }
         }
 
@@ -40,7 +43,7 @@ namespace SkySchool.Pages
             Manager.MainFrame.Navigate(new AddEditPageUser(new User()));
         }
 
-        private void BtnDel_Click(object sender, RoutedEventArgs e)
+        private async void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             var UsersForRemoving = DGridUser.SelectedItems.Cast<User>().ToList();
 
@@ -49,11 +52,11 @@ namespace SkySchool.Pages
             {
                 try
                 {
-                    Manager.GetContext().User.RemoveRange(UsersForRemoving);
-                    Manager.GetContext().SaveChanges();
+                    _context.User.RemoveRange(UsersForRemoving);
+                    await _context.SaveChangesAsync();
                     MessageBox.Show("Данные удалены!");
 
-                    DGridUser.ItemsSource = Manager.GetContext().User.ToList();
+                    DGridUser.ItemsSource = _context.User.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -65,6 +68,11 @@ namespace SkySchool.Pages
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new AddEditPageUser((sender as Button).DataContext as User));
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }
