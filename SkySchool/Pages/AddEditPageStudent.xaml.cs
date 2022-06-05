@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,81 +14,104 @@ namespace SkySchool.Pages
     /// <summary>
     /// Логика взаимодействия для AddEditPageDis1.xaml
     /// </summary>
-    public partial class AddEditPageStudent : Page
+    public partial class AddEditPageStudent : Page, IDisposable
     {
-        public Student _currentStud = new Student();
-        public string st = "";
-        public int gr = 0;
+        private readonly SkySchoolEntities _context;
+        private Student _currentStud;
+        private string fio = "";
+        private int ng = 0;
 
         public AddEditPageStudent(Student selectedStud)
         {
             InitializeComponent();
 
+            _currentStud = new Student();
+
             if (selectedStud != null)
                 _currentStud = selectedStud;
 
+            _context = new SkySchoolEntities();
+
             DataContext = _currentStud;
-            ComboBoxNG.ItemsSource = Manager.GetContext().Gruppa.ToList();
-            st = _currentStud.FIO;
-            gr = _currentStud.ID_Gruppi;
+            TxtFIO.Text = _currentStud.FIO;
+            ComboBoxNG.ItemsSource = _context.Gruppa.ToList();
+            fio = _currentStud.FIO;
+            ng = _currentStud.ID_Gruppi;
         }
 
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        public void Dispose()
         {
-            StringBuilder errors = new StringBuilder();
+            _context.Dispose();
+        }
 
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
             using (SkySchoolEntities db = new SkySchoolEntities())
             {
-                Student tempStud = db.Student.Where(p => p.FIO.Equals(_currentStud.FIO)).FirstOrDefault();
-                if (TxtFIO.Text == st) { }
+                StringBuilder errors = new StringBuilder();
+
+                Student tempStud = await _context.Student.FirstOrDefaultAsync(p => p.FIO.Equals(_currentStud.FIO));
+
+                if (TxtFIO.Text == fio) { }
                 else if (tempStud != null)
                 {
-                    Student tempStud1 = db.Student.Where(p => p.ID_Gruppi.Equals(_currentStud.ID_Gruppi)).FirstOrDefault();
-                    if (ComboBoxNG.Text == Convert.ToString(gr)) { }
-                    else if (tempStud1 != null)
+                    Student tempNG = await _context.Student.FirstOrDefaultAsync(p => p.ID_Gruppi.Equals(_currentStud.ID_Gruppi));
+                    
+                    if (ComboBoxNG.Text == Convert.ToString(ng)) { }
+                    else if (tempNG != null)
                     {
                         errors.AppendLine("Такой студент уже существует");
                     }
                 }
-            }
 
-            if (string.IsNullOrWhiteSpace(_currentStud.FIO))
-                errors.AppendLine("Укажите ФИО");
-
-            if (string.IsNullOrWhiteSpace(Convert.ToString(_currentStud.ID_Gruppi)))
-                errors.AppendLine("Укажите номер группы");
-
-            if (TxtFIO.Text.Length < 150)
-            {
-                for (int i = 0; i < TxtFIO.Text.Length; i++)
+                if (string.IsNullOrWhiteSpace(_currentStud.FIO))
                 {
-                    if (TxtFIO.Text[i] >= '0' && TxtFIO.Text[i] <= '9')
+                    errors.AppendLine("Укажите ФИО");
+                }    
+
+                if (string.IsNullOrWhiteSpace(Convert.ToString(_currentStud.ID_Gruppi)))
+                {
+                    errors.AppendLine("Укажите номер группы");
+                }
+
+                if (TxtFIO.Text.Length < 150)
+                {
+                    for (int i = 0; i < TxtFIO.Text.Length; i++)
                     {
-                        errors.AppendLine("ФИО может содержать только буквы");
-                        break;
+                        if (TxtFIO.Text[i] >= '0' && TxtFIO.Text[i] <= '9')
+                        {
+                            errors.AppendLine("ФИО может содержать только буквы");
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
-                errors.AppendLine("Фио не может содержать более 150 символов");
-            }
+                else
+                {
+                    errors.AppendLine("Фио не может содержать более 150 символов");
+                }
 
-            if (errors.Length > 0)
-            {
-                MessageBox.Show(errors.ToString());
-                return;
-            }
+                if (errors.Length > 0)
+                {
+                    MessageBox.Show(errors.ToString());
+                    return;
+                }
 
-            if (_currentStud.ID_Student == 0)
-            {
-                Gruppa kk = ComboBoxNG.SelectedItem as Gruppa;
-                Manager.GetContext().Student.Add(new Student() { FIO = TxtFIO.Text, ID_Gruppi = kk.ID_Gruppi/*ComboBoxNG.SelectedItem as Gruppa*/ });
-            }
+                Gruppa gupp = ComboBoxNG.SelectedItem as Gruppa;
+
+                if (_currentStud.ID_Student == 0)
+                {
+                    _context.Student.Add(new Student()
+                    { FIO = TxtFIO.Text, ID_Gruppi = gupp.ID_Gruppi });
+                }
+                else
+                {
+                    var studentToUpdate = await _context.Student.FirstOrDefaultAsync(x => x.ID_Student == _currentStud.ID_Student);
+                    studentToUpdate.ID_Gruppi = gupp.ID_Gruppi;
+                }
 
                 try
                 {
-                    Manager.GetContext().SaveChanges();
+                    await db.SaveChangesAsync();
                     MessageBox.Show("Информация сохранена!");
                     Manager.MainFrame.GoBack();
                 }
@@ -94,6 +119,7 @@ namespace SkySchool.Pages
                 {
                     MessageBox.Show(ex.Message.ToString());
                 }
+            }
         }
 
         private void ImgBck_MouseDown(object sender, MouseButtonEventArgs e)

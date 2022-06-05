@@ -52,11 +52,11 @@ namespace SkySchool.Pages
             PassBoxParol.Focus();
         }
 
-        private void ButtonEntry_Click(object sender, RoutedEventArgs e)
+        private async void ButtonEntry_Click(object sender, RoutedEventArgs e)
         {
             TxtParol.Text = PassBoxParol.Password;
             PassBoxParol.Password = TxtParol.Text;
-            if (EntryCheck.Login(TxtLogin.Text, TxtParol.Text))
+            if (await EntryCheck.Login(TxtLogin.Text, TxtParol.Text))
             {
                 if (Manager.CurrentUser.Role == "admin")
                 {

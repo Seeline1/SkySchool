@@ -9,7 +9,7 @@ namespace SkySchool.Classes
 {
     class Manager
     {
-        public static SkySchoolEntities _context;
+        private static SkySchoolEntities _context;
         public static Frame MainFrame;
         public static User CurrentUser;
 

@@ -70,6 +70,7 @@
     </ApplicationDefinition>
     <Compile Include="Classes\EntryCheck.cs" />
     <Compile Include="Classes\Manager.cs" />
+    <Compile Include="Classes\ReportModel.cs" />
     <Compile Include="Disciplina.cs">
       <DependentUpon>ModelSkySchool.tt</DependentUpon>
     </Compile>

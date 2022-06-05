@@ -11,14 +11,17 @@ namespace SkySchool.Pages
     /// <summary>
     /// Логика взаимодействия для PageInfo.xaml
     /// </summary>
-    public partial class PageInfoDisciplina : Page
+    public partial class PageInfoDisciplina : Page, IDisposable
     {
-        public static SkySchoolEntities _coontext = new SkySchoolEntities();
+        private readonly SkySchoolEntities _context;
 
         public PageInfoDisciplina()
         {
             InitializeComponent();
-            DGridDis.ItemsSource = _coontext.Disciplina.OrderBy(h => h.Nazvanie).ToList();
+
+            _context = new SkySchoolEntities();
+
+            DGridDis.ItemsSource = _context.Disciplina.OrderBy(h => h.Nazvanie).ToList();
         }
 
         private void ImgHome_MouseDown(object sender, MouseButtonEventArgs e)
@@ -28,10 +31,13 @@ namespace SkySchool.Pages
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (Visibility == Visibility.Visible)
+            using (SkySchoolEntities db = new SkySchoolEntities())
             {
-                Manager.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
-                DGridDis.ItemsSource = Manager.GetContext().Disciplina.ToList();
+                if (Visibility == Visibility.Visible)
+                {
+                    db.ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                    DGridDis.ItemsSource = db.Disciplina.ToList();
+                }
             }
         }
 
@@ -40,7 +46,7 @@ namespace SkySchool.Pages
             Manager.MainFrame.Navigate(new AddEditPageDisciplina(new Disciplina()));
         }
 
-        private void BtnDel_Click(object sender, RoutedEventArgs e)
+        private async void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             var DisForRemoving = DGridDis.SelectedItems.Cast<Disciplina>().ToList();
 
@@ -49,11 +55,14 @@ namespace SkySchool.Pages
             {
                 try
                 {
-                    Manager.GetContext().Disciplina.RemoveRange(DisForRemoving);
-                    Manager.GetContext().SaveChanges();
-                    MessageBox.Show("Данные удалены!");
+                    using (SkySchoolEntities db = new SkySchoolEntities())
+                    {
+                        db.Disciplina.RemoveRange(DisForRemoving);
+                        await db.SaveChangesAsync();
+                        MessageBox.Show("Данные удалены!");
 
-                    DGridDis.ItemsSource = Manager.GetContext().Disciplina.ToList();
+                        DGridDis.ItemsSource = db.Disciplina.ToList();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -65,6 +74,11 @@ namespace SkySchool.Pages
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new AddEditPageDisciplina((sender as Button).DataContext as Disciplina));
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

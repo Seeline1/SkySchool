@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -12,69 +14,86 @@ namespace SkySchool.Pages
     /// <summary>
     /// Логика взаимодействия для AddEditPageGruppa.xaml
     /// </summary>
-    public partial class AddEditPageGruppa : Page
+    public partial class AddEditPageGruppa : Page, IDisposable
     {
-        public Gruppa _currentGr = new Gruppa();
+        private readonly SkySchoolEntities _context;
+        private Gruppa _currentGr;
 
         public AddEditPageGruppa(Gruppa selectedGr)
         {
             InitializeComponent();
-            if (selectedGr != null)
-                _currentGr = selectedGr;
 
-            DataContext = _currentGr;
+            _currentGr = new Gruppa();
+
+            if (selectedGr != null)
+            {
+                _currentGr = selectedGr;
+            }
+
+            _context = new SkySchoolEntities();
+
+            TxtNG.Text = Convert.ToString(_currentGr.Nomer_Gruppi);
         }
 
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        public void Dispose()
         {
-            StringBuilder errors = new StringBuilder();
+            _context.Dispose();
+        }
 
-            if (TxtGr.Text.Length == 4)
-            {
-                for (int i = 0; i < TxtGr.Text.Length; i++)
-                {
-                    if (TxtGr.Text[i] >= '0' && TxtGr.Text[i] <= '9') { }
-                    else
-                    {
-                        errors.AppendLine("Номер группы должен состоять только из цифр");
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                errors.AppendLine("Номер группы должен состоять из 4 цифр");
-            }
-
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
             using (SkySchoolEntities db = new SkySchoolEntities())
             {
-                int a = Convert.ToInt32(TxtGr.Text);
-                Gruppa tempGr = db.Gruppa.Where(p => p.Nomer_Gruppi.Equals(a)).FirstOrDefault();
+                StringBuilder errors = new StringBuilder();
+
+                if (TxtNG.Text.Length == 4)
+                {
+                    for (int i = 0; i < TxtNG.Text.Length; i++)
+                    {
+                        if (TxtNG.Text[i] >= '0' && TxtNG.Text[i] <= '9') { }
+                        else
+                        {
+                            errors.AppendLine("Номер группы должен состоять только из цифр");
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    errors.AppendLine("Номер группы должен состоять из 4 цифр");
+                }
+
+                int a = Convert.ToInt32(TxtNG.Text);
+
+                Gruppa tempGr = await db.Gruppa.FirstOrDefaultAsync(p => p.Nomer_Gruppi.Equals(a));
+
                 if (tempGr != null)
                 {
                     MessageBox.Show("Группа с таким номером уже существует");
                     return;
                 }
-            }
 
-            if (errors.Length > 0)
-            {
-                MessageBox.Show(errors.ToString());
-                return;
-            }
+                if (errors.Length > 0)
+                {
+                    MessageBox.Show(errors.ToString());
+                    return;
+                }
 
-            if (_currentGr.ID_Gruppi == 0)
-                Manager.GetContext().Gruppa.Add(new Gruppa() { Nomer_Gruppi = Convert.ToInt32(TxtGr.Text) });
+                _context.Gruppa.Add(new Gruppa()
+                {
+                    Nomer_Gruppi = Convert.ToInt32(TxtNG.Text)
+                });
 
-            try
-            {
-                Manager.GetContext().SaveChanges();
-                MessageBox.Show("Информация сохранена!");
-                Manager.MainFrame.GoBack();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
+                try
+                {
+                    await db.SaveChangesAsync();
+                    MessageBox.Show("Информация сохранена!");
+                    Manager.MainFrame.GoBack();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                }
             }
         }
 

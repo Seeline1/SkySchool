@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace SkySchool.Classes
 {
     class EntryCheck
     {
-        public static bool Login(string login, string password)
+        public static async Task<bool> Login(string login, string password)
         {
             if (login.Length > 0)
             {
@@ -19,7 +20,7 @@ namespace SkySchool.Classes
                 {
                     using (SkySchoolEntities db = new SkySchoolEntities())
                     {
-                        Manager.Currentuser = db.User.Where(p => p.Login.Equals(login) && p.Parol.Equals(password)).FirstOrDefault();
+                        Manager.Currentuser = await db.User.FirstOrDefaultAsync(p => p.Login.Equals(login) && p.Parol.Equals(password));
                     }
 
                     if (Manager.Currentuser != null)

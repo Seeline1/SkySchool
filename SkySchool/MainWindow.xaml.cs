@@ -13,7 +13,7 @@ namespace SkySchool
         {
             InitializeComponent();
             Manager.MainFrame = MainFrame;
-            Manager.MainFrame.Navigate(new PageAuth());
+            Manager.MainFrame.Navigate(new PageInfoDisciplina());
         }
     }
 }
